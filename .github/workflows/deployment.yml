@@ -62,8 +62,15 @@ jobs:
         run: ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
       - name: Trigger server deployment script
-        run: |
-          ssh root@${{ secrets.SERVER_HOST }} -p 23 "docker stop ${{ env.IMAGE_NAME }} || true"
-          ssh root@${{ secrets.SERVER_HOST }} -p 23 "docker rm ${{ env.IMAGE_NAME }} || true"
-          ssh root@${{ secrets.SERVER_HOST }} -p 23 "docker pull ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
-          ssh root@${{ secrets.SERVER_HOST }} -p 23 "docker run -p ${{ env.PORT }}:${{ env.PORT}} --name ${{ env.IMAGE_NAME }} -d ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S
+            docker stop ${{ env.IMAGE_NAME }} || true
+            docker rm ${{ env.IMAGE_NAME }} || true
+            docker pull ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            docker run -p ${{ env.PORT }}:${{ env.PORT}} --name ${{ env.IMAGE_NAME }} -d ${{ secrets.DOCKER_HUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
