@@ -15,7 +15,6 @@ class ExampleData {
     public String content;
 }
 
-
 @RestController
 public class Example {
     @RestController // ps 底下接的如果不是function，而是class，則要加上這行 定義Class內是一個RESTful API
