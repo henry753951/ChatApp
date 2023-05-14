@@ -5,46 +5,54 @@ import org.springframework.web.bind.annotation.*;
 import com.chatapp.backend.entity.BaseResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // 若參數是 null 則不顯示
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+
+@JsonInclude(JsonInclude.Include.NON_NULL) // 若參數是 null 則不顯示 (可省略)
 class ExampleData {
     public Integer id;
     public String title;
     public String content;
 }
 
+
 @RestController
 public class Example {
-    // GET 也可以使用 GetMapping("/")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String sayHelloGet() {
-        return "Hello World by GET!";
+    @RestController // ps 底下接的如果不是function，而是class，則要加上這行 定義Class內是一個RESTful API
+    @RequestMapping("/")
+    @Tag(name = "Example", description = "Example API") // Docs 顯示的描述 (可省略) ，省略會直接顯示Class名稱
+    public class Example2 {
+        // GET 也可以使用 GetMapping("/")
+        @RequestMapping(value = "/", method = RequestMethod.GET)
+        public String sayHelloGet() {
+            return "Hello World by GET!";
+        }
+
+        // POST 也可以使用 PostMapping("/")
+        @RequestMapping(value = "/", method = RequestMethod.POST)
+        public String sayHelloPost() {
+            return "Hello World by POST!";
+        }
+
+        // 全部method都可以使用 ， 用來 RESTful API (CRUD)，可在內部細分method
+        // 下面是全部method都指向 Test1
+        @RequestMapping("/item/{id}")
+        public BaseResponse<ExampleData> Test1(
+                // @PathVariable: 取得網址上的參數 {id)
+                // @RequestParam: 取得網址上GET的參數 ?title=xxx ， required = true 時，沒有該參數會報錯
+                @PathVariable(value = "id") Integer id,
+                @RequestParam(value = "title", required = false) String title, // 若沒有該參數，則 title = null
+                @RequestParam(value = "content", required = false, defaultValue = "預設值") String hasDefault) {
+
+            BaseResponse<ExampleData> response = new BaseResponse<ExampleData>("成功!");
+            ExampleData data = new ExampleData();
+            data.id = id;
+            data.title = title;
+            data.content = hasDefault;
+            response.data = data;
+            return response;
+        }
     }
-
-    // POST 也可以使用 PostMapping("/")
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String sayHelloPost() {
-        return "Hello World by POST!";
-    }
-
-    // 全部method都可以使用 ， 用來 RESTful API (CRUD)，可在內部細分method
-    // 下面是全部method都指向 Test1
-    @RequestMapping("/item/{id}")
-    public BaseResponse<ExampleData> Test1(
-            // @PathVariable: 取得網址上的參數 {id)
-            // @RequestParam: 取得網址上GET的參數 ?title=xxx ， required = true 時，沒有該參數會報錯
-            @PathVariable(value = "id") Integer id,
-            @RequestParam(value = "title", required = false) String title, // 若沒有該參數，則 title = null
-            @RequestParam(value = "content", required = false, defaultValue = "預設值") String hasDefault) {
-
-        BaseResponse<ExampleData> response = new BaseResponse<ExampleData>("成功!");
-        ExampleData data = new ExampleData();
-        data.id = id;
-        data.title = title;
-        data.content = hasDefault;
-        response.data = data;
-        return response;
-    }
-
     // 全部method都可以使用 ， 用來 RESTful API (CRUD)，可在內部細分method
     // 下面是全部method都指向 Test1
 
@@ -53,6 +61,7 @@ public class Example {
     public class ExampleCRUD {
         ArrayList<String> items = new ArrayList<String>();
 
+        @Operation(summary = "取得該Index的Item", description = "取得該Index的Item") // Docs 顯示的描述 (可省略)
         @GetMapping("/{id}")
         public String findByIndex(@PathVariable String id) {
             try {
@@ -64,7 +73,7 @@ public class Example {
             }
 
         }
-
+        
         @GetMapping("/")
         public ArrayList<String> GetItems() {
             return items;
