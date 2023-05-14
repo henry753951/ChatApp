@@ -1,0 +1,12 @@
+server:
+  port: 8080 # 伺服器的port
+spring:
+    application:
+        name: chatapp-server # 服務名稱
+    data:
+        mongodb:
+            uri: ${mongodb.uri} # 資料庫連線
+            auto-index-creation: true
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss # 設定日期格式
+        time-zone: Asia/Taipei # 設定時區
