@@ -2,6 +2,8 @@ name: CI/CD auto deploy
 on:
   push:
     branches: [ master ]
+env:
+  mongodb.uri : "mongodb://user:password@localhost:27017/chatApp"
 jobs:
   build:
     runs-on: ubuntu-latest
