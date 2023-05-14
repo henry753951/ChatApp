@@ -5,7 +5,7 @@ spring:
         name: chatapp-server # 服務名稱
     data:
         mongodb:
-            uri: ${env.MONGODB_URI} # 資料庫連線
+            uri: ${MONGODB_URI} # 資料庫連線
             auto-index-creation: true
     jackson:
         date-format: yyyy-MM-dd HH:mm:ss # 設定日期格式
