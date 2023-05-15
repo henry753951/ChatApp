@@ -9,3 +9,5 @@
 
 # 執行
 - 先等他 Importing Maven projects... 完成
+- 使用左邊那一排的 dashboard 圖案
+- 點一下run或debug run
