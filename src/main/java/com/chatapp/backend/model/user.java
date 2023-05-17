@@ -1,5 +1,8 @@
 package com.chatapp.backend.model;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
@@ -15,6 +18,8 @@ public class user {
     public String token;
     public User user;
 
+    //friend list
+    public Set<String> Friend_Name_List;
     
     public boolean online;
     public long lastSeen; // unix timestamp
