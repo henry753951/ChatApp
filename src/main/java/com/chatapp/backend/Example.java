@@ -40,7 +40,6 @@ public class Example {
         public String sayHelloPost(
                 @RequestParam(value = "firstName", required = false) String firstName, // 若沒有該參數，則 title = null
                 @RequestParam(value = "lastName", required = false) String lastName) {
-            userRepository.save(new user(firstName, lastName));
             return "Hello World by POST!";
         }
 
