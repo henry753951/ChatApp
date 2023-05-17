@@ -54,6 +54,7 @@ public class Example {
     }
     // 全部method都可以使用 ， 用來 RESTful API (CRUD)，可在內部細分method
     // 下面是全部method都指向 Test1
+    //88888888888888
 
     @RestController // ps 底下接的如果不是function，而是class，則要加上這行 定義Class內是一個RESTful API
     @RequestMapping("/CRUD")
