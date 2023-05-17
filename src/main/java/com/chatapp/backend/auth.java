@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import com.chatapp.backend.utils;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/auth")
 public class auth {
     @Autowired
