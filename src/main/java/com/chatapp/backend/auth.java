@@ -24,12 +24,6 @@ public class auth {
     public BaseResponse<User> register(
             @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "password", required = false) String password) {
-<<<<<<< HEAD
-        BaseResponse<String> response = new BaseResponse<String>("成功!");
-        // ...);
-        //binhan very
-        response.data = username;
-=======
         BaseResponse<User> response = new BaseResponse<User>("成功!");
         // ...
         
@@ -43,7 +37,6 @@ public class auth {
         
 
         response.data = user;
->>>>>>> b78bda7878691441d0357e9e2e76f24897a827df
         return response;
     }
 }
