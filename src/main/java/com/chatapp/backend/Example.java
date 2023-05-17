@@ -1,8 +1,13 @@
 package com.chatapp.backend;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.chatapp.backend.entity.BaseResponse;
+import com.chatapp.backend.model.UserRepository;
+import com.chatapp.backend.model.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,15 +26,21 @@ public class Example {
     @RequestMapping("/")
     @Tag(name = "Example", description = "Example API") // Docs 顯示的描述 (可省略) ，省略會直接顯示Class名稱
     public class Example2 {
+        @Autowired
+        private UserRepository userRepository;
+
         // GET 也可以使用 GetMapping("/")
         @RequestMapping(value = "/", method = RequestMethod.GET)
-        public String sayHelloGet() {
-            return "Hello World by GET!";
+        public List<user> sayHelloGet() {
+            return userRepository.findAll();
         }
 
         // POST 也可以使用 PostMapping("/")
         @RequestMapping(value = "/", method = RequestMethod.POST)
-        public String sayHelloPost() {
+        public String sayHelloPost(
+                @RequestParam(value = "firstName", required = false) String firstName, // 若沒有該參數，則 title = null
+                @RequestParam(value = "lastName", required = false) String lastName) {
+            userRepository.save(new user(firstName, lastName));
             return "Hello World by POST!";
         }
 
@@ -72,7 +83,7 @@ public class Example {
             }
 
         }
-        
+
         @GetMapping("/")
         public ArrayList<String> GetItems() {
             return items;
