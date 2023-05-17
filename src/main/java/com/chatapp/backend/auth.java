@@ -22,7 +22,7 @@ public class auth {
             @RequestParam(value = "password", required = false) String password) {
         BaseResponse<String> response = new BaseResponse<String>("成功!");
         // ...);
-
+        //binhan very
         response.data = username;
         return response;
     }
