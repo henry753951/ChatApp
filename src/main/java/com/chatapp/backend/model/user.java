@@ -2,26 +2,19 @@ package com.chatapp.backend.model;
 
 import org.springframework.data.annotation.Id;
 
+import com.chatapp.backend.entity.User;
+
 public class user {
 
     @Id
     public String id;
+    public User user;
+    public String token;
 
-    public String firstName;
-    public String lastName;
+    public boolean online;
+    public long lastSeen; // unix timestamp
 
     public user() {
     }
 
-    public user(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "Customer[id=%s, firstName='%s', lastName='%s']",
-                id, firstName, lastName);
-    }
 }
