@@ -8,5 +8,4 @@ import com.chatapp.backend.model.userDB;
 
 public interface UserRepository  extends MongoRepository<userDB, String> {
   public userDB findByUsername(String username);
-  public userDB findByToken(String token);
 }

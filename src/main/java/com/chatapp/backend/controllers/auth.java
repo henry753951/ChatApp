@@ -1,17 +1,20 @@
 package com.chatapp.backend.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.servlet.http.*;
 
 import com.chatapp.backend.entity.BaseResponse;
 import com.chatapp.backend.entity.User;
+import com.chatapp.backend.entity.role;
 import com.chatapp.backend.model.userDB;
 import com.chatapp.backend.repository.UserRepository;
+import com.chatapp.backend.security.JwtUtil;
 import com.chatapp.backend.utils;
 
 class UserLoginModel {
@@ -27,11 +30,11 @@ public class auth {
     private UserRepository userRepository;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public BaseResponse<User> login(HttpServletResponse response_, HttpServletRequest request,
+    public BaseResponse<HashMap<String, Object>> login(HttpServletRequest request,
             @RequestBody UserLoginModel userLoginModel) {
-        BaseResponse<User> response = new BaseResponse<User>();
+        BaseResponse<HashMap<String, Object>> response = new BaseResponse<HashMap<String, Object>>();
         // ...
-
+        userLoginModel.username = userLoginModel.username.toLowerCase();
         if (false) {
             response.msg = "帳號或密碼錯誤";
             response.setError("授權失敗!");
@@ -44,16 +47,18 @@ public class auth {
         user.Name = "test";
         user.email = userLoginModel.username + "@mail.nuk.edu.tw";
         user.department = "test department";
-        user.token = utils.sha256(userLoginModel.username);
-        if (userRepository.findByUsername(userLoginModel.username) == null) {
-            userDB userInDb = new userDB();
+        userDB userInDb = userRepository.findByUsername(userLoginModel.username);
+        if (userInDb == null) {
+            userInDb = new userDB();
             userInDb.username = userLoginModel.username;
             userInDb.user = user;
-            userInDb.token = user.token;
-
             userRepository.save(userInDb);
         }
-        response.data = user;
+
+        response.data = new HashMap<String,Object>();
+        response.data.put("token", JwtUtil.createToken(userInDb));
+        response.data.put("user", user);
+
         return response;
     }
 }

@@ -1,8 +1,7 @@
 package com.chatapp.backend.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-
-import nonapi.io.github.classgraph.json.Id;
 
 public class msgDB {
     @Id

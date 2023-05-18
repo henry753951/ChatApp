@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ class inviteAddBody{
 
 @RestController
 @RequestMapping("/invite")
+@SecurityRequirement(name = "Bearer Authentication")
 public class invite {
     @Autowired
     private inviteRepository inviteRepository;
@@ -35,15 +37,15 @@ public class invite {
     public BaseResponse<List<inviteDB>> getInvities(HttpServletRequest request) {
         BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
         
-        String token = request.getHeader("Authorization");
-        userDB user = userRepository.findByToken(token);
-        if (user == null) {
-            response.setError("授權失敗!");
-            return response;
-        }
+        // String token = request.getHeader("Authorization");
+        // userDB user = userRepository.findByToken(token);
+        // if (user == null) {
+        //     response.setError("授權失敗!");
+        //     return response;
+        // }
         // find invites of user
-        List<inviteDB> invitingList = inviteRepository.findByReceiveId(user.id);
-        response.data = invitingList;
+        // List<inviteDB> invitingList = inviteRepository.findByReceiveId(user.id);
+        // response.data = invitingList;
         return response;
     }
     

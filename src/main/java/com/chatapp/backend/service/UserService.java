@@ -18,7 +18,5 @@ public class UserService  {
         return false;
     }
 
-    public userDB findUserByToken(String token) {
-        return userRepository.findByToken(token);
-    }
+
 }
