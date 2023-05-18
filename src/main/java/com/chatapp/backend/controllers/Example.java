@@ -1,4 +1,4 @@
-package com.chatapp.backend;
+package com.chatapp.backend.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
