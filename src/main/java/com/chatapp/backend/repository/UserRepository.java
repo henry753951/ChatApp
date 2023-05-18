@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.chatapp.backend.model.user;
+import com.chatapp.backend.model.userDB;
 
-public interface UserRepository  extends MongoRepository<user, String> {
-  public user findByUsername(String username);
+public interface UserRepository  extends MongoRepository<userDB, String> {
+  public userDB findByUsername(String username);
+  public userDB findByToken(String token);
 }

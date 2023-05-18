@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import com.chatapp.backend.entity.User;
 
-public class user {
+public class userDB {
 
     @Id
     public String id;
@@ -24,7 +24,7 @@ public class user {
     public boolean online;
     public long lastSeen; // unix timestamp
 
-    public user() {
+    public userDB() {
     }
 
 }
