@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.chatapp.backend.entity.BaseResponse;
-import com.chatapp.backend.model.UserRepository;
 import com.chatapp.backend.model.user;
+import com.chatapp.backend.repository.UserRepository;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.v3.oas.annotations.tags.Tag;

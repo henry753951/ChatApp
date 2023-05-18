@@ -5,15 +5,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import com.chatapp.backend.entity.BaseResponse;
 import com.chatapp.backend.entity.User;
-import com.chatapp.backend.model.UserRepository;
 import com.chatapp.backend.model.user;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
+import com.chatapp.backend.repository.UserRepository;
 import com.chatapp.backend.utils;
+class UserLoginModel {
+    public String username;
+    public String password;
+}
 
 @RestController
 @CrossOrigin
@@ -24,8 +25,7 @@ public class auth {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public BaseResponse<User> login(
-            @RequestParam(value = "username", required = false) String username,
-            @RequestParam(value = "password", required = false) String password) {
+            @RequestBody UserLoginModel userLoginModel) {
         BaseResponse<User> response = new BaseResponse<User>();
         // ...
         if (false) {
@@ -36,14 +36,14 @@ public class auth {
 
         response.msg = "成功登入";
         User user = new User();
-        user.username = username;
+        user.username = userLoginModel.username;
         user.Name = "test";
-        user.email = username + "@mail.nuk.edu.tw";
+        user.email = userLoginModel.username + "@mail.nuk.edu.tw";
         user.department = "test department";
-        user.token = utils.sha256(username);
-        if (userRepository.findByUsername(username) == null) {
+        user.token = utils.sha256(userLoginModel.username);
+        if (userRepository.findByUsername(userLoginModel.username) == null) {
             user userInDb = new user();
-            userInDb.username = username;
+            userInDb.username = userLoginModel.username;
             userInDb.user = user;
             userInDb.token = user.token;
 
