@@ -10,7 +10,7 @@ import com.chatapp.backend.entity.Msg;
 
 @RestController
 @RequestMapping("/msg")
-public class put_msg {
+public class msg {
     @RequestMapping(value= "/{id}",method = RequestMethod.PUT)
     public BaseResponse<Msg> msg(
             @RequestParam(value = "roomId", required = false) String roomId,
