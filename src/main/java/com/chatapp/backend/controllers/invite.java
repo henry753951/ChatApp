@@ -36,11 +36,6 @@ public class invite {
 
 
     
-    @RequestMapping(value = "/username", method = RequestMethod.GET)
-    @ResponseBody
-    public String currentUserName(Authentication authentication) {
-        return authentication.getName().toString();
-    }
 
     @RequestMapping(value = "/invite", method = RequestMethod.GET)
     public BaseResponse<List<inviteDB>> getInvities(HttpServletRequest request) {

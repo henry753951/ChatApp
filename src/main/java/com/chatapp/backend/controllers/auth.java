@@ -3,6 +3,8 @@ package com.chatapp.backend.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
@@ -10,10 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.servlet.http.*;
-
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.chatapp.backend.entity.BaseResponse;
 import com.chatapp.backend.entity.User;
 import com.chatapp.backend.entity.role;
@@ -72,4 +77,14 @@ public class auth {
 
         return response;
     }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @RequestMapping(value = "/username", method = RequestMethod.GET)
+    public String currentUserName(Authentication authentication) {
+        String token = (String) authentication.getCredentials();
+        DecodedJWT decodedJWT = JWT.decode(token);
+        Claim claim = decodedJWT.getClaim("id");
+        return claim.asString();
+    }
+
 }
