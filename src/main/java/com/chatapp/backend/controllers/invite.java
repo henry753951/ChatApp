@@ -60,9 +60,12 @@ public class invite {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if(userDetails.isActive()){
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            inviteDB inviting = new inviteDB();
-            
-            inviteRepository.save(inviting);
+            List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
+            for(inviteDB inviting : invitingList){
+                userRepository.addFriend(inviting.senderId, inviting.receiveId);
+                userRepository.addFriend(inviting.receiveId, inviting.senderId);
+                inviteRepository.delete(inviting);
+            }
             return response;
         }else{
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
