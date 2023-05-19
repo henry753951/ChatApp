@@ -26,6 +26,7 @@ import com.chatapp.backend.model.userDB;
 import com.chatapp.backend.repository.UserRepository;
 import com.chatapp.backend.security.JwtUtil;
 import com.chatapp.backend.service.AuthService;
+import com.chatapp.backend.service.MailService;
 import com.chatapp.backend.utils;
 import java.lang.reflect.Type;
 
@@ -40,7 +41,8 @@ class UserLoginModel {
 public class auth {
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private MailService mailService;
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public BaseResponse<HashMap<String, Object>> login(HttpServletRequest request,
             @RequestBody UserLoginModel userLoginModel) throws IOException {
@@ -69,6 +71,8 @@ public class auth {
             userInDb.user = user;
             userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
             userRepository.save(userInDb);
+
+            
         }
 
         response.data = new HashMap<String, Object>();
@@ -90,6 +94,9 @@ public class auth {
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
     public BaseResponse<String> verify(Authentication authentication, @RequestBody String code) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        if(userDetails.isActive()){
+            return new BaseResponse<String>("已驗證過");
+        }
         userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
         BaseResponse<String> response = new BaseResponse<String>();
         if (userInDb.verify.verificationCode.equals(code) ) {
@@ -106,13 +113,17 @@ public class auth {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @RequestMapping(value = "/verify/resend", method = RequestMethod.POST)
-    public BaseResponse<String> resend(Authentication authentication) {
+    public BaseResponse<String> resend(Authentication authentication) throws Exception {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        if(userDetails.isActive()){
+            return new BaseResponse<String>("已驗證過");
+        }
         userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
         BaseResponse<String> response = new BaseResponse<String>();
         userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
         userRepository.save(userInDb);
 
+        mailService.sendSimpleMail();
         response.msg = "已重新寄送驗證碼";
         return response;
     }
