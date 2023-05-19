@@ -70,6 +70,7 @@ public class auth {
             userInDb.username = userLoginModel.username;
             userInDb.user = user;
             userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
+            mailService.sendMailWithCode(userInDb.user.email, userInDb.verify.verificationCode);
             userRepository.save(userInDb);
 
             
