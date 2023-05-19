@@ -13,15 +13,15 @@ public class MailService {
    @Autowired
     private JavaMailSender mailSender;
 
-    
-
-    public void sendSimpleMail()  {
+    public void sendMailWithCode(String mail, String code)  {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("a1105534@mail.nuk.edu.tw");
+        message.setFrom("ININDER");
         message.setTo("a1105534@mail.nuk.edu.tw");
-        message.setSubject("測試測試");
-        message.setText("內容：這是一封測試信件，恭喜您成功發送了唷");
+        message.setSubject("ININDER 啟用帳號驗證碼");
+        message.setText("你的帳號驗證碼為: " + code + "，請在畫面上輸入驗證碼以完成啟用帳號。");
 
         mailSender.send(message);
     }
+
+    
 }
