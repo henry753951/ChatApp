@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RequiredArgsConstructor
 public class roomDB {
     @RequiredArgsConstructor
@@ -19,6 +20,8 @@ public class roomDB {
         public String sender;
         public long time;
     }
+
+
     @Id
     public String id;
     @Indexed(unique = true)//設定索引值
