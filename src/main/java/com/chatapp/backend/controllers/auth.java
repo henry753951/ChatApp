@@ -51,16 +51,16 @@ public class auth {
         .build();
         okhttp3.Response re = client.newCall(r).execute();
         String json = re.body().string();
+        System.out.println(json);
         HashMap<String, Object> result = new Gson().fromJson(json, HashMap.class);
-        HashMap<String, Object> user_ = new Gson().fromJson(result.get("user").toString(), HashMap.class);
+
         // print
-        System.out.println(result);
         if (!result.containsKey("id")) {
             response.msg = "帳號或密碼錯誤";
             response.setError("授權失敗!");
             return response;
         }
-
+        HashMap<String, Object> user_ = new Gson().fromJson(result.get("user").toString(), HashMap.class);
         response.msg = "成功登入";
         User user = new User();
         user.username = userLoginModel.username;
