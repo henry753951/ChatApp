@@ -1,9 +1,10 @@
 package com.chatapp.backend.controllers;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.chatapp.backend.repository.*;
 import com.chatapp.backend.model.*;
@@ -33,8 +34,18 @@ public class invite {
     @Autowired
     private UserRepository userRepository;
 
+
+    
+    @RequestMapping(value = "/username", method = RequestMethod.GET)
+    @ResponseBody
+    public String currentUserName(Authentication authentication) {
+        return authentication.getName().toString();
+    }
+
     @RequestMapping(value = "/invite", method = RequestMethod.GET)
     public BaseResponse<List<inviteDB>> getInvities(HttpServletRequest request) {
+
+
         BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
         
         // String token = request.getHeader("Authorization");
