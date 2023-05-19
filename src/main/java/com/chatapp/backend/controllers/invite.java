@@ -36,13 +36,54 @@ public class invite {
     @Autowired
     private UserRepository userRepository;
 
+    @RequestMapping(value = "/invite", method = RequestMethod.DELETE)
+    public BaseResponse<inviteDB> deleteInvite(Authentication authentication,
+            @RequestBody(required = true) inviteAddBody inviteAddBody) {
+        // token 拿的 USER
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        if(userDetails.isActive()){
+            BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
+            inviteDB inviting = new inviteDB();
+            inviting.senderId = inviteAddBody.senderId;
+            inviting.receiveId = inviteAddBody.receiverId;
+            inviteRepository.delete(inviting);
+            return response;
+        }else{
+            BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
+            response.setError("帳號未啟用");
+            return response;
+        }
+    }
+    
+    @RequestMapping(value = "/invite", method = RequestMethod.POST)
+    public BaseResponse<inviteDB> acceptInvities(Authentication authentication){
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        if(userDetails.isActive()){
+            BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
+            inviteDB inviting = new inviteDB();
+            
+            inviteRepository.save(inviting);
+            return response;
+        }else{
+            BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
+            response.setError("帳號未啟用");
+            return response;
+        }
+    }
+
     @RequestMapping(value = "/invite", method = RequestMethod.GET)
     public BaseResponse<List<inviteDB>> getInvities(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
-        List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
-        response.data = invitingList;
-        return response;
+        if (userDetails.isActive()) {
+            BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
+            List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
+            response.data = invitingList;
+            return response;
+        } else {
+            BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
+            response.setError("帳號未啟用");
+            return response;
+        }
     }
 
     @RequestMapping(value = "/invite", method = RequestMethod.PUT)
