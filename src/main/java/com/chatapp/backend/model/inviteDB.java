@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import com.chatapp.backend.entity.User;
 public class inviteDB {
     @Id
+    public String id;
+    @Indexed(unique = false)
     public String senderId;
     @Indexed(unique = false)
     public String receiveId;

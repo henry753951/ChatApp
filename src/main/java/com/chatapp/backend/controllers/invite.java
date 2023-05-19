@@ -1,4 +1,5 @@
 package com.chatapp.backend.controllers;
+
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.chatapp.backend.repository.*;
+import com.chatapp.backend.service.UserDetailsImpl;
 import com.chatapp.backend.model.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -20,7 +22,7 @@ import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
 
-class inviteAddBody{
+class inviteAddBody {
     public String senderId;
     public String receiverId;
 }
@@ -34,30 +36,20 @@ public class invite {
     @Autowired
     private UserRepository userRepository;
 
-
-    
-
     @RequestMapping(value = "/invite", method = RequestMethod.GET)
-    public BaseResponse<List<inviteDB>> getInvities(HttpServletRequest request) {
-
-
+    public BaseResponse<List<inviteDB>> getInvities(Authentication authentication) {
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
-        
-        // String token = request.getHeader("Authorization");
-        // userDB user = userRepository.findByToken(token);
-        // if (user == null) {
-        //     response.setError("授權失敗!");
-        //     return response;
-        // }
-        // find invites of user
-        // List<inviteDB> invitingList = inviteRepository.findByReceiveId(user.id);
-        // response.data = invitingList;
+        List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
+        response.data = invitingList;
         return response;
     }
-    
-    @RequestMapping(value= "/invite",method = RequestMethod.PUT)
-    public BaseResponse<inviteDB> putInvite(
-            @RequestBody(required = true) inviteAddBody inviteAddBody) { 
+
+    @RequestMapping(value = "/invite", method = RequestMethod.PUT)
+    public BaseResponse<inviteDB> putInvite(Authentication authentication,
+            @RequestBody(required = true) inviteAddBody inviteAddBody) {
+        // token 拿的 USER
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
 
         inviteDB inviting = new inviteDB();
@@ -68,9 +60,9 @@ public class invite {
         inviting.time = time;
 
         // check if inviting is already exist
-        List<inviteDB> invitingList = inviteRepository.findAll();
-        for(inviteDB invite : invitingList){
-            if(invite.senderId.equals(inviting.senderId) && invite.receiveId.equals(inviting.receiveId)){
+        List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
+        for (inviteDB invite : invitingList) {
+            if (invite.senderId.equals(inviting.senderId)) {
                 response.setError("已經邀請過了");
                 response.msg = "已經邀請過了";
                 return response;
@@ -82,4 +74,3 @@ public class invite {
         return response;
     }
 }
-

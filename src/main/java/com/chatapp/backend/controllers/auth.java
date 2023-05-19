@@ -67,7 +67,7 @@ public class auth {
             userInDb = new userDB();
             userInDb.username = userLoginModel.username;
             userInDb.user = user;
-            userInDb.verrify.verrificationCode = utils.getRandomNumber(6).toString();
+            userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
             userRepository.save(userInDb);
         }
 
@@ -87,10 +87,34 @@ public class auth {
 
     
     @SecurityRequirement(name = "Bearer Authentication")
-    @RequestMapping(value = "/verrify", method = RequestMethod.GET)
-    public String verrify(Authentication authentication) {
+    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    public BaseResponse<String> verify(Authentication authentication, @RequestBody String code) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        return userDetails.toString();
+        userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
+        BaseResponse<String> response = new BaseResponse<String>();
+        if (userInDb.verify.verificationCode.equals(code)) {
+            userInDb.verify.verificationCode = "";
+            userInDb.verify.isVerified = true;
+            userRepository.save(userInDb);
+            response.msg = "驗證成功";
+            response.data = JwtUtil.createToken(userInDb);
+            return response;
+        } else {
+            return new BaseResponse<String>("驗證失敗");
+        }
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @RequestMapping(value = "/resend", method = RequestMethod.POST)
+    public BaseResponse<String> resend(Authentication authentication) {
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
+        BaseResponse<String> response = new BaseResponse<String>();
+        userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
+        userRepository.save(userInDb);
+        
+        response.msg = "已重新寄送驗證碼";
+        return response;
     }
 
 }

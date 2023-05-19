@@ -12,9 +12,9 @@ import com.chatapp.backend.entity.role;
 
 
 public class userDB {
-    public class verrification {
-        public String verrificationCode;
-        public Boolean isVerrified = false;
+    public class verification {
+        public String verificationCode;
+        public Boolean isVerified = false;
     }
     @Id
     public String id;
@@ -26,7 +26,7 @@ public class userDB {
     public Set<String> Friend_Name_List;
     
     public boolean online;
-    public verrification verrify;
+    public verification verify;
     public long lastSeen; // unix timestamp
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     

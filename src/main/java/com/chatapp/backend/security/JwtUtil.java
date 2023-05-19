@@ -32,7 +32,7 @@ public class JwtUtil {
                 .withHeader(map)
                 .withClaim("username", user.username)//userName
                 .withClaim("id", user.id)//userId
-                .withClaim("active", user.verrify.isVerrified)//userId
+                .withClaim("active", user.verify.isVerified)//userId
                 .withExpiresAt(expireDate)
                 .withIssuedAt(new Date())
                 .sign(Algorithm.HMAC256(SECRET));

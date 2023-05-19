@@ -35,7 +35,7 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 user.id,
                 user.username,
-				user.verrify.isVerrified,
+				user.verify.isVerified,
                 authorities);
     }
 
