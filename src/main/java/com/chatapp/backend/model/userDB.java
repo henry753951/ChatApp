@@ -9,8 +9,13 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import com.chatapp.backend.entity.User;
 import com.chatapp.backend.entity.role;
 
-public class userDB {
 
+
+public class userDB {
+    public class verrification {
+        public String verrificationCode;
+        public Boolean isVerrified = false;
+    }
     @Id
     public String id;
     @Indexed(unique = true)
@@ -21,6 +26,7 @@ public class userDB {
     public Set<String> Friend_Name_List;
     
     public boolean online;
+    public verrification verrify;
     public long lastSeen; // unix timestamp
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     

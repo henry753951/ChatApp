@@ -27,14 +27,14 @@ public class SecurityConfig {
     private JwtAuthenticationFilter authenticationFilter;
 
     public SecurityConfig(UserDetailsService userDetailsService,
-                          JwtAuthenticationEntryPoint authenticationEntryPoint,
-                          JwtAuthenticationFilter authenticationFilter){
+            JwtAuthenticationEntryPoint authenticationEntryPoint,
+            JwtAuthenticationFilter authenticationFilter) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.authenticationFilter = authenticationFilter;
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -46,19 +46,17 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        List<String> whiteList = Arrays.asList("/docs", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**","/auth/login");
+        List<String> whiteList = Arrays.asList("/docs", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",
+                "/auth/login");
 
-        http.csrf().disable()
-            .authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers(whiteList.toArray(new String[0])).permitAll()
-                    .anyRequest().authenticated()
-            )
-            .exceptionHandling(exception -> exception
-                .authenticationEntryPoint(authenticationEntryPoint)
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
+        http.csrf().disable();
+        http.authorizeHttpRequests(
+                (authorize) -> authorize.requestMatchers(whiteList.toArray(new String[0])).permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

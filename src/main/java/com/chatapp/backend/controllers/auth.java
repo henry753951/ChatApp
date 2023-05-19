@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
+import com.chatapp.backend.service.UserDetailsImpl;
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class auth {
         if (result == null) {
             response.msg = "帳號或密碼錯誤";
             response.setError("授權失敗!");
-            response.code = 403;
+            response.code = 401;
             return response;
         }
         response.msg = "成功登入";
@@ -64,10 +64,10 @@ public class auth {
         user.department = result.get("student_department_name").toString();
         userDB userInDb = userRepository.findByUsername(userLoginModel.username);
         if (userInDb == null) {
-
             userInDb = new userDB();
             userInDb.username = userLoginModel.username;
             userInDb.user = user;
+            userInDb.verrify.verrificationCode = utils.getRandomNumber(6).toString();
             userRepository.save(userInDb);
         }
 
@@ -79,12 +79,18 @@ public class auth {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @RequestMapping(value = "/username", method = RequestMethod.GET)
-    public String currentUserName(Authentication authentication) {
-        String token = (String) authentication.getCredentials();
-        DecodedJWT decodedJWT = JWT.decode(token);
-        Claim claim = decodedJWT.getClaim("id");
-        return claim.asString();
+    @RequestMapping(value = "/getuser", method = RequestMethod.GET)
+    public String getuser(Authentication authentication) {
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        return userDetails.toString();
+    }
+
+    
+    @SecurityRequirement(name = "Bearer Authentication")
+    @RequestMapping(value = "/verrify", method = RequestMethod.GET)
+    public String verrify(Authentication authentication) {
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        return userDetails.toString();
     }
 
 }

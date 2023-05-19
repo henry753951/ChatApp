@@ -20,7 +20,7 @@ public class JwtUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     private static final String SECRET = "my_secret";
-    private static final long EXPIRATION = 1800L;// 秒
+    private static final long EXPIRATION = 3600L*24*31;// 秒
  
     public static String createToken(userDB user) {
         Date expireDate = new Date(System.currentTimeMillis() + EXPIRATION * 1000);
@@ -32,6 +32,7 @@ public class JwtUtil {
                 .withHeader(map)
                 .withClaim("username", user.username)//userName
                 .withClaim("id", user.id)//userId
+                .withClaim("active", user.verrify.isVerrified)//userId
                 .withExpiresAt(expireDate)
                 .withIssuedAt(new Date())
                 .sign(Algorithm.HMAC256(SECRET));
@@ -46,7 +47,6 @@ public class JwtUtil {
             jwt = verifier.verify(token);
  
         } catch (Exception e) {
-            logger.error(e.getMessage());
             logger.error("token Unauthorized");
             return null;
         }
