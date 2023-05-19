@@ -9,9 +9,12 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import com.chatapp.backend.entity.User;
 import com.chatapp.backend.entity.role;
 
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class userDB {
+    @RequiredArgsConstructor
     public class verification {
         public String verificationCode;
         public Boolean isVerified = false;
@@ -26,11 +29,9 @@ public class userDB {
     public Set<String> Friend_Name_List;
     
     public boolean online;
-    public verification verify;
+    public verification verify = new verification();
     public long lastSeen; // unix timestamp
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     
-    public userDB() {
-    }
 
 }

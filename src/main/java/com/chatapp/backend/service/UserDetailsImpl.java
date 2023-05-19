@@ -48,6 +48,10 @@ public class UserDetailsImpl implements UserDetails {
 		return id;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
 	@Override
 	public String getUsername() {
 		return username;

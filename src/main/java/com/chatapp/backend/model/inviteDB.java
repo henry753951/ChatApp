@@ -1,8 +1,13 @@
 package com.chatapp.backend.model;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import com.chatapp.backend.entity.User;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class inviteDB {
     @Id
     public String id;
@@ -12,6 +17,5 @@ public class inviteDB {
     public String receiveId;
 
     public long time;
-    public inviteDB() {
-    }
+
 }

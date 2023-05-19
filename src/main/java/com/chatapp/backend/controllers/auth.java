@@ -105,14 +105,14 @@ public class auth {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @RequestMapping(value = "/resend", method = RequestMethod.POST)
+    @RequestMapping(value = "/verify/resend", method = RequestMethod.POST)
     public BaseResponse<String> resend(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
         BaseResponse<String> response = new BaseResponse<String>();
         userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
         userRepository.save(userInDb);
-        
+
         response.msg = "已重新寄送驗證碼";
         return response;
     }
