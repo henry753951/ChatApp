@@ -62,6 +62,7 @@ public class invite {
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
             List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
             for(inviteDB inviting : invitingList){
+                // UserRepository userRepository = new UserRepository();
                 // userRepository.addFriend(inviting.senderId, inviting.receiveId);
                 // userRepository.addFriend(inviting.receiveId, inviting.senderId);
                 inviteRepository.delete(inviting);
