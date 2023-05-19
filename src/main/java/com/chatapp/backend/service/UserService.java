@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.chatapp.backend.controllers.user;
 import com.chatapp.backend.model.userDB;
+import com.chatapp.backend.repository.RoomRepository;
 import com.chatapp.backend.repository.UserRepository;
 
 @Service

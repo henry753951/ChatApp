@@ -1,5 +1,6 @@
 package com.chatapp.backend.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import lombok.RequiredArgsConstructor;
+
 
 @RequiredArgsConstructor
 public class roomDB {
@@ -19,9 +21,11 @@ public class roomDB {
         public String sender;
         public long time;
     }
+
+
     @Id
     public String id;
     @Indexed(unique = true)//設定索引值
-    public Set<String> memberIds;
-    public List<msgDB> messages;
+    public Set<String> memberIds = Set.of();
+    public List<msgDB> messages=new ArrayList<roomDB.msgDB>();
 }

@@ -123,7 +123,7 @@ public class auth {
         userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
         userRepository.save(userInDb);
 
-        mailService.sendSimpleMail();
+        mailService.sendMailWithCode(userInDb.user.email, userInDb.verify.verificationCode);
         response.msg = "已重新寄送驗證碼";
         return response;
     }
