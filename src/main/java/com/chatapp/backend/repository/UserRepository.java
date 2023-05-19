@@ -6,5 +6,5 @@ import com.chatapp.backend.model.userDB;
 
 public interface UserRepository  extends MongoRepository<userDB, Object> {
   public userDB findByUsername(String username);
-  public userDB addFriend(String username, String friendName);
+  // public userDB addFriend(String username, String friendName);
 }
