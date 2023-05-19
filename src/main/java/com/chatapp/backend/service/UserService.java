@@ -3,7 +3,9 @@ package com.chatapp.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.chatapp.backend.model.roomDB;
 import com.chatapp.backend.model.userDB;
+import com.chatapp.backend.repository.RoomRepository;
 import com.chatapp.backend.repository.UserRepository;
 
 @Service
@@ -16,6 +18,11 @@ public class UserService  {
             return true;
         }
         return false;
+    }
+    @Autowired
+    private RoomRepository roomRepository;
+    public roomDB getRoom(String id) {
+        return roomRepository.findById(id);
     }
 
 
