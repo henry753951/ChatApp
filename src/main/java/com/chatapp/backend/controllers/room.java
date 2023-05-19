@@ -30,11 +30,11 @@ public class room {
     @Autowired
     private UserRepository userRepository;
     @RequestMapping(value = "/room", method = RequestMethod.GET)
-    public BaseResponse<List<roomDB>> getInvities(Authentication authentication) {
+    public BaseResponse<List<roomDB>> getRooms(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<List<roomDB>> response = new BaseResponse<List<roomDB>>("成功!");
-            List<roomDB> roomList = roomRepository.findAll();
+            List<roomDB> roomList = roomRepository.findByMemberIdsContaining(userDetails.getId());
             response.data = roomList;
             return response;
 
@@ -45,14 +45,12 @@ public class room {
         }
     }
     @RequestMapping(value = "/room", method = RequestMethod.POST)
-    public BaseResponse<roomDB> createRoom(Authentication authentication,
-            @RequestBody(required = true) roomAddBody roomAddBody) {
+    public BaseResponse<roomDB> createRoom(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<roomDB> response = new BaseResponse<roomDB>("成功!");
             roomDB room = new roomDB();
-            room.memberIds = roomAddBody.memberIds;
-            room.messages = roomAddBody.messages;
+            room.memberIds.add(userDetails.getId());
             roomRepository.save(room);
             response.data = room;
             return response;
@@ -62,9 +60,8 @@ public class room {
             return response;
         }
     }
-    //show room
     @RequestMapping(value = "/room/{id}", method = RequestMethod.GET)
-    public BaseResponse<roomDB> getRoom(Authentication authentication,
+    public BaseResponse<roomDB> getRoomMessages(Authentication authentication,
             @PathVariable(value = "id") String id) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {

@@ -1,5 +1,6 @@
 package com.chatapp.backend.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,6 @@ public class roomDB {
     @Id
     public String id;
     @Indexed(unique = true)//設定索引值
-    public Set<String> memberIds;
-    public List<msgDB> messages;
+    public Set<String> memberIds = Set.of();
+    public List<msgDB> messages=new ArrayList<roomDB.msgDB>();
 }

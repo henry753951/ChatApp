@@ -21,9 +21,5 @@ public class UserService  {
     }
     @Autowired
     private RoomRepository roomRepository;
-    public roomDB getRoom(String id) {
-        return roomRepository.findById(id);
-    }
-
 
 }
