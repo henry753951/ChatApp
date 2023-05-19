@@ -26,7 +26,7 @@ public class userDB {
     public User user;
 
     //friend list
-    public Set<String> Friend_Name_List;
+    public Set<userDB> friends;
     
     public boolean online;
     public verification verify = new verification();

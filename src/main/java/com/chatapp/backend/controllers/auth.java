@@ -92,7 +92,7 @@ public class auth {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
         BaseResponse<String> response = new BaseResponse<String>();
-        if (userInDb.verify.verificationCode.equals(code)) {
+        if (userInDb.verify.verificationCode.equals(code) ) {
             userInDb.verify.verificationCode = "";
             userInDb.verify.isVerified = true;
             userRepository.save(userInDb);
