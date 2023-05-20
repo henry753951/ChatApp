@@ -79,6 +79,7 @@ public class auth {
         response.data = new HashMap<String, Object>();
         response.data.put("token", JwtUtil.createToken(userInDb));
         response.data.put("user", user);
+        response.data.put("verified", userInDb.verify.isVerified);
 
         return response;
     }
