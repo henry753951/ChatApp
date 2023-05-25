@@ -68,11 +68,14 @@ public class invite {
                     mine.friends.add(friend);
                     userRepository.save(friend);
                     userRepository.save(mine);
+                    
+                    mine.invities.remove(inviting);
                     inviteRepository.delete(inviting);
                     response.data = inviting;
                     return response;
                 }
             }
+            response.setError("找不到使用者");
             return response;
         }else{
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
