@@ -24,9 +24,6 @@ import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
 
-class inviteAddBody {
-    public String receiverId;
-}
 
 @RestController
 @RequestMapping("/friend")
@@ -38,23 +35,20 @@ public class friend {
     private UserRepository userRepository;
 
     @RequestMapping(value = "/friend", method = RequestMethod.GET)
-    public Set<userDB> acceptInvities(Authentication authentication) {
+    public BaseResponse<Set<userDB>> return_friends(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        Set<userDB> friend_set = userRepository.findById(userDetails.getId()).friends;
-        return friend_set;
+        if (userDetails.isActive()) {
+            BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>();
+            Set<userDB> invities = userRepository.findById(userDetails.getId()).friends;
+            response.data = invities;
+            return response;
+        } else {
+            BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>();
+            response.setError("帳號未啟用");
+            return response;
+        }
     }
 
-    @RequestMapping(value = "/friend", method = RequestMethod.DELETE)
-    public Set<userDB> acceptInvities(Authentication authentication,
-            @RequestBody(required = true) String deleteId) {
-        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        Set<userDB> friend_set = userRepository.findById(userDetails.getId()).friends;
-        for (userDB userDB : friend_set) {
-            if(userDB.id==deleteId){
-                
-            }
-        }
-        return friend_set;
-    }
+   
 
 }
