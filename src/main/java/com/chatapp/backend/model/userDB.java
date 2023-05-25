@@ -42,7 +42,6 @@ public class userDB {
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     
     public boolean checkInvitedOrFriended(String senderId){
-        
         for(inviteDB invite:invities){
             if(invite.senderId.equals(senderId)){
                 return false;
