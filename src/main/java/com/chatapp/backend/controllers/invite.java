@@ -58,12 +58,11 @@ public class invite {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if(userDetails.isActive()){
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            Set<inviteDB> invities = userRepository.findById(userDetails.getId()).invities;
+            userDB mine = userRepository.findById(userDetails.getId());
 
-            for(inviteDB inviting : invities){
+            for(inviteDB inviting : mine.invities){
                 if(inviting.senderId.equals(Userid)){
                     userDB friend = userRepository.findById(Userid);
-                    userDB mine = userRepository.findById(userDetails.getId());
                     friend.friends.add(mine);
                     mine.friends.add(friend);
                     userRepository.save(friend);
