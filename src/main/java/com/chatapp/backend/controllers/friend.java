@@ -44,4 +44,17 @@ public class friend {
         return friend_set;
     }
 
+    @RequestMapping(value = "/friend", method = RequestMethod.DELETE)
+    public Set<userDB> acceptInvities(Authentication authentication,
+            @RequestBody(required = true) String deleteId) {
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        Set<userDB> friend_set = userRepository.findById(userDetails.getId()).friends;
+        for (userDB userDB : friend_set) {
+            if(userDB.id==deleteId){
+                
+            }
+        }
+        return friend_set;
+    }
+
 }
