@@ -118,16 +118,24 @@ public class invite {
             response.setError("找不到使用者");
             response.msg = "失敗!";
             return response;
-        } else if (userDetails.getId().equals(receiver.id)) {
+        }
+
+        if (userDetails.getId().equals(receiver.id)) {
             response.setError("不能邀請自己");
             response.msg = "失敗!";
             return response;
-        } else if (!receiver.checkInvitedOrFriended(userDetails.getId())) {
+        }
+        // if(!receiver.checkFriend(username)){
+        //     response.setError("已經是好友了");
+        //     response.msg = "失敗!";
+        //     return response;
+        // }
+        if (!receiver.checkInvited(userDetails.getId())) {
             response.setError("已經邀請過了");
             response.msg = "失敗!";
             return response;
         }
-        System.out.println(response.msg);
+
         inviteRepository.save(inviting);
         receiver.invities.add(inviting);
         userRepository.save(receiver);

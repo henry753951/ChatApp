@@ -41,17 +41,21 @@ public class userDB {
     public long lastSeen; // unix timestamp
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     
-    public boolean checkInvitedOrFriended(String senderId){
+    public boolean checkInvited(String senderId){
         for(inviteDB invite:invities){
             if(invite.senderId.equals(senderId)){
                 return false;
             }
         }
-        for(userDB friend:friends){
-            if(friend.id.equals(senderId)){
-                return false;
-            }
-        }
+        
         return true;
     } 
+    public boolean checkFriend(String senderId){
+        for(userDB friend:friends){
+            if(friend.id.equals(senderId)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
