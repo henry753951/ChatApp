@@ -111,13 +111,16 @@ public class invite {
         Date date = new Date();
         long time = date.getTime();
         inviting.time = time;
-        userDB sender = userRepository.findById(inviteAddBody.receiverId);
-        if (sender.invities.contains(inviting)) {
+        
+        userDB receiver = userRepository.findById(inviteAddBody.receiverId);
+        
+        if (!receiver.checkInvitedOrFriended(userDetails.getId())) {
             response.setError("已經邀請過了");
             return response;
         }
-        sender.invities.add(inviting);
-        userRepository.save(sender);
+        inviteRepository.save(inviting);
+        receiver.invities.add(inviting);
+        userRepository.save(receiver);
 
         response.data = inviting;
         return response;
