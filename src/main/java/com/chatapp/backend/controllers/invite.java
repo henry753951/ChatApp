@@ -132,11 +132,11 @@ public class invite {
             response.msg = "失敗!";
             return response;
         }
-        // if(!receiver.checkFriend(username)){
-        //     response.setError("已經是好友了");
-        //     response.msg = "失敗!";
-        //     return response;
-        // }
+        if(!receiver.checkFriend(username)){
+            response.setError("已經是好友了");
+            response.msg = "失敗!";
+            return response;
+        }
         if (!receiver.checkInvited(userDetails.getId())) {
             response.setError("已經邀請過了");
             response.msg = "失敗!";
