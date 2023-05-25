@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableAsync
 public class MailService {
-
+ 
    @Autowired
     private JavaMailSender mailSender;
 
