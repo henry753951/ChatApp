@@ -67,10 +67,11 @@ public class invite {
                     friend.friends.add(mine);
                     mine.friends.add(friend);
                     userRepository.save(friend);
-                    userRepository.save(mine);
-                    
                     mine.invities.remove(inviting);
+                    userRepository.save(mine);
+
                     inviteRepository.delete(inviting);
+
                     response.data = inviting;
                     return response;
                 }
@@ -114,17 +115,19 @@ public class invite {
         inviting.time = time;
         
         userDB receiver = userRepository.findByUsername(username);
-
+        if (receiver == null) {
+            response.setError("找不到使用者");
+            return response;
+        }
         if (!receiver.checkInvitedOrFriended(userDetails.getId())) {
             response.setError("已經邀請過了");
             return response;
         }
-        System.out.println(inviting);
+
         inviteRepository.save(inviting);
         receiver.invities.add(inviting);
         userRepository.save(receiver);
 
-        response.data = inviting;
         return response;
     }
 }
