@@ -47,5 +47,21 @@ public class friend {
             return response;
         }
     }
-
+    @RequestMapping(value = "/friend", method = RequestMethod.DELETE)
+    public BaseResponse<userDB> deleteInvite(Authentication authentication,
+            @RequestBody(required = true) String friendId) {
+        // token 拿的 USER
+        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        if(userDetails.isActive()){
+            BaseResponse<userDB> response = new BaseResponse<userDB>("成功!");
+            userDB inviting = new userDB();
+            inviting.id = userDetails.getId();
+            userRepository.delete(inviting);
+            return response;
+        }else{
+            BaseResponse<userDB> response = new BaseResponse<userDB>();
+            response.setError("帳號未啟用");
+            return response;
+        }
+    }
 }
