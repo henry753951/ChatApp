@@ -6,5 +6,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.chatapp.backend.model.inviteDB;
 public interface inviteRepository  extends MongoRepository<inviteDB, Object> {
     public List<inviteDB> findBySenderId(String senderId);
-    public List<inviteDB> findByReceiveId(String receiveId);
 }
