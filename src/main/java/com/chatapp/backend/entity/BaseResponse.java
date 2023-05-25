@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class BaseResponse<T> {
     public Integer code = HttpStatus.OK.value();
     public String msg;
-    private Boolean success = true;
-    private String errorMessage;
+    public Boolean success = true;
+    public String errorMessage;
     public T data;
 
 
