@@ -35,7 +35,7 @@ public class friend {
     private UserRepository userRepository;
 
     @RequestMapping(value = "/friend", method = RequestMethod.GET)
-    public BaseResponse<Set<userDB>> return_friends(Authentication authentication) {
+    public BaseResponse<Set<userDB>> getInvities(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>();
@@ -48,7 +48,6 @@ public class friend {
             return response;
         }
     }
-
    
 
 }
