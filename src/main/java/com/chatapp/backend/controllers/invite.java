@@ -24,10 +24,6 @@ import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
 
-class inviteAddBody {
-    public String receiverId;
-    public String username;
-}
 
 @RestController
 @RequestMapping("/invite")
@@ -40,7 +36,7 @@ public class invite {
 
     @RequestMapping(value = "/invite", method = RequestMethod.DELETE)
     public BaseResponse<inviteDB> deleteInvite(Authentication authentication,
-            @RequestBody(required = true) inviteAddBody inviteAddBody) {
+            @RequestBody(required = true) String inviteId) {
         // token 拿的 USER
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if(userDetails.isActive()){
@@ -102,7 +98,7 @@ public class invite {
 
     @RequestMapping(value = "/invite", method = RequestMethod.PUT)
     public BaseResponse<inviteDB> putInvite(Authentication authentication,
-            @RequestBody(required = true) inviteAddBody inviteAddBody) {
+            @RequestBody(required = true) String username) {
         // token 拿的 USER
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
@@ -113,7 +109,7 @@ public class invite {
         long time = date.getTime();
         inviting.time = time;
         
-        userDB receiver = userRepository.findById(inviteAddBody.receiverId);
+        userDB receiver = userRepository.findByUsername(username);
         
         if (!receiver.checkInvitedOrFriended(userDetails.getId())) {
             response.setError("已經邀請過了");
