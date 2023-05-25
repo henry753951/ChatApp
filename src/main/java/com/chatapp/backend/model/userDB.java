@@ -27,6 +27,7 @@ public class userDB {
     public String id;
     @Indexed(unique = true)
     public String username;
+    public String avatar = "";
     public User user;
 
     //friend list
