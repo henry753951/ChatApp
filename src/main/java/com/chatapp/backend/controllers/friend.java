@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
 
-
 @RestController
 @RequestMapping("/friend")
 @SecurityRequirement(name = "Bearer Authentication")
@@ -35,19 +34,18 @@ public class friend {
     private UserRepository userRepository;
 
     @RequestMapping(value = "/friend", method = RequestMethod.GET)
-    public BaseResponse<Set<userDB>> getInvities(Authentication authentication) {
+    public BaseResponse<Set<userDB>> getFriends(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
-            BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>();
-            Set<userDB> invities = userRepository.findById(userDetails.getId()).friends;
-            response.data = invities;
+            BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>("成功!");
+            Set<userDB> friends = userRepository.findById(userDetails.getId()).friends;
+            response.data = friends;
             return response;
         } else {
-            BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>();
+            BaseResponse<Set<userDB>> response = new BaseResponse<Set<userDB>>("帳號未啟用");
             response.setError("帳號未啟用");
             return response;
         }
     }
-   
 
 }

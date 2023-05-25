@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.chatapp.backend.entity.User;
 import com.chatapp.backend.entity.role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +30,10 @@ public class userDB {
     public User user;
 
     //friend list
-    @DBRef
+    @DBRef(lazy = true)
+    @JsonBackReference
     public Set<userDB> friends = Set.of();
-    @DBRef
+    @DBRef(lazy = true)
     public Set<inviteDB> invities = Set.of();
 
     public boolean online;

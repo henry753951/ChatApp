@@ -10,3 +10,4 @@ spring:
     jackson:
         date-format: yyyy-MM-dd HH:mm:ss # 設定日期格式
         time-zone: Asia/Taipei # 設定時區
+    
