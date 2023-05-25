@@ -25,6 +25,7 @@ import com.chatapp.backend.entity.*;
 
 class inviteAddBody {
     public String receiverId;
+    public String username;
 }
 
 @RestController
@@ -101,7 +102,8 @@ public class invite {
         Date date = new Date();
         long time = date.getTime();
         inviting.time = time;
-        userDB sender = userRepository.findById(inviteAddBody.receiverId).get();
+        //userDB sender = userRepository.findById(inviteAddBody.receiverId).get();
+        userDB sender = userRepository.findByUsername(inviteAddBody.username);
         if (sender.invities.contains(inviting)) {
             response.setError("已經邀請過了");
             return response;
