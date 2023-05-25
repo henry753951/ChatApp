@@ -3,6 +3,7 @@ package com.chatapp.backend.controllers;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,16 +57,25 @@ public class invite {
     }
     
     @RequestMapping(value = "/invite", method = RequestMethod.POST)
-    public BaseResponse<inviteDB> acceptInvities(Authentication authentication){
+    public BaseResponse<inviteDB> acceptInvities(Authentication authentication,
+            @RequestBody(required = true) String Userid) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if(userDetails.isActive()){
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
-            for(inviteDB inviting : invitingList){
-                // UserRepository userRepository = new UserRepository();
-                // userRepository.addFriend(inviting.senderId, inviting.receiveId);
-                // userRepository.addFriend(inviting.receiveId, inviting.senderId);
-                inviteRepository.delete(inviting);
+            Set<inviteDB> invities = userRepository.findById(userDetails.getId()).invities;
+
+            for(inviteDB inviting : invities){
+                if(inviting.senderId.equals(Userid)){
+                    userDB friend = userRepository.findById(Userid);
+                    userDB mine = userRepository.findById(userDetails.getId());
+                    friend.friends.add(mine);
+                    mine.friends.add(friend);
+                    userRepository.save(friend);
+                    userRepository.save(mine);
+                    inviteRepository.delete(inviting);
+                    response.data = inviting;
+                    return response;
+                }
             }
             return response;
         }else{
@@ -76,15 +86,15 @@ public class invite {
     }
 
     @RequestMapping(value = "/invite", method = RequestMethod.GET)
-    public BaseResponse<List<inviteDB>> getInvities(Authentication authentication) {
+    public BaseResponse<Set<inviteDB>> getInvities(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
-            BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
-            List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
-            response.data = invitingList;
+            BaseResponse<Set<inviteDB>> response = new BaseResponse<Set<inviteDB>>();
+            Set<inviteDB> invities = userRepository.findById(userDetails.getId()).invities;
+            response.data = invities;
             return response;
         } else {
-            BaseResponse<List<inviteDB>> response = new BaseResponse<List<inviteDB>>();
+            BaseResponse<Set<inviteDB>> response = new BaseResponse<Set<inviteDB>>();
             response.setError("帳號未啟用");
             return response;
         }
@@ -102,14 +112,16 @@ public class invite {
         Date date = new Date();
         long time = date.getTime();
         inviting.time = time;
-        //userDB sender = userRepository.findById(inviteAddBody.receiverId).get();
-        userDB sender = userRepository.findByUsername(inviteAddBody.username);
-        if (sender.invities.contains(inviting)) {
+        
+        userDB receiver = userRepository.findById(inviteAddBody.receiverId);
+        
+        if (!receiver.checkInvitedOrFriended(userDetails.getId())) {
             response.setError("已經邀請過了");
             return response;
         }
-        sender.invities.add(inviting);
-        userRepository.save(sender);
+        inviteRepository.save(inviting);
+        receiver.invities.add(inviting);
+        userRepository.save(receiver);
 
         response.data = inviting;
         return response;

@@ -30,14 +30,27 @@ public class userDB {
 
     //friend list
     @DBRef
-    public Set<userDB> friends;
+    public Set<userDB> friends = Set.of();
     @DBRef
-    public Set<inviteDB> invities;
+    public Set<inviteDB> invities = Set.of();
 
     public boolean online;
     public verification verify = new verification();
     public long lastSeen; // unix timestamp
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     
-
+    public boolean checkInvitedOrFriended(String senderId){
+        
+        for(inviteDB invite:invities){
+            if(invite.senderId.equals(senderId)){
+                return false;
+            }
+        }
+        for(userDB friend:friends){
+            if(friend.id.equals(senderId)){
+                return false;
+            }
+        }
+        return true;
+    } 
 }
