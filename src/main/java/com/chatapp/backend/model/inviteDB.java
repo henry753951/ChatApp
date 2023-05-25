@@ -14,9 +14,9 @@ public class inviteDB {
     public String id;
     @Indexed(unique = false)
     public String senderId;
-    
+
     @DBRef
-    public User sender;
+    public userDB sender;
     
     public long time;
 
