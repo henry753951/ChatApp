@@ -13,9 +13,7 @@ public class inviteDB {
     public String id;
     @Indexed(unique = false)
     public String senderId;
-    @Indexed(unique = false)
-    public String receiveId;
-
+    
     public long time;
 
 }

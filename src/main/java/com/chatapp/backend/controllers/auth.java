@@ -43,6 +43,7 @@ public class auth {
     private UserRepository userRepository;
     @Autowired
     private MailService mailService;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public BaseResponse<HashMap<String, Object>> login(HttpServletRequest request,
             @RequestBody UserLoginModel userLoginModel) throws IOException {
@@ -73,7 +74,11 @@ public class auth {
             mailService.sendMailWithCode(userInDb.user.email, userInDb.verify.verificationCode);
             userRepository.save(userInDb);
 
-            
+        } else if (userInDb.verify.isVerified == false) {
+            userInDb.verify.verificationCode = utils.getRandomNumber(6).toString();
+            mailService.sendMailWithCode(userInDb.user.email, userInDb.verify.verificationCode);
+            userRepository.save(userInDb);
+
         }
 
         response.data = new HashMap<String, Object>();
@@ -91,17 +96,16 @@ public class auth {
         return userDetails.toString();
     }
 
-    
     @SecurityRequirement(name = "Bearer Authentication")
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
     public BaseResponse<String> verify(Authentication authentication, @RequestBody String code) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        if(userDetails.isActive()){
+        if (userDetails.isActive()) {
             return new BaseResponse<String>("已驗證過");
         }
         userDB userInDb = userRepository.findByUsername(userDetails.getUsername());
         BaseResponse<String> response = new BaseResponse<String>();
-        if (userInDb.verify.verificationCode.equals(code) ) {
+        if (userInDb.verify.verificationCode.equals(code)) {
             userInDb.verify.verificationCode = "";
             userInDb.verify.isVerified = true;
             userRepository.save(userInDb);
@@ -117,7 +121,7 @@ public class auth {
     @RequestMapping(value = "/verify/resend", method = RequestMethod.POST)
     public BaseResponse<String> resend(Authentication authentication) throws Exception {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        if(userDetails.isActive()){
+        if (userDetails.isActive()) {
             return new BaseResponse<String>("已驗證過");
         }
         userDB userInDb = userRepository.findByUsername(userDetails.getUsername());

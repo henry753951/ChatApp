@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.chatapp.backend.repository.*;
 import com.chatapp.backend.service.UserDetailsImpl;
@@ -23,7 +24,6 @@ import java.text.SimpleDateFormat;
 import com.chatapp.backend.entity.*;
 
 class inviteAddBody {
-    public String senderId;
     public String receiverId;
 }
 
@@ -44,8 +44,7 @@ public class invite {
         if(userDetails.isActive()){
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
             inviteDB inviting = new inviteDB();
-            inviting.senderId = inviteAddBody.senderId;
-            inviting.receiveId = inviteAddBody.receiverId;
+            inviting.senderId = userDetails.getId();
             inviteRepository.delete(inviting);
             return response;
         }else{
@@ -98,23 +97,18 @@ public class invite {
         BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
 
         inviteDB inviting = new inviteDB();
-        inviting.senderId = inviteAddBody.senderId;
-        inviting.receiveId = inviteAddBody.receiverId;
+        inviting.senderId = userDetails.getId();
         Date date = new Date();
         long time = date.getTime();
         inviting.time = time;
-
-        // check if inviting is already exist
-        List<inviteDB> invitingList = inviteRepository.findByReceiveId(userDetails.getId());
-        for (inviteDB invite : invitingList) {
-            if (invite.senderId.equals(inviting.senderId)) {
-                response.setError("已經邀請過了");
-                response.msg = "已經邀請過了";
-                return response;
-            }
+        userDB sender = userRepository.findById(inviteAddBody.receiverId).get();
+        if (sender.invities.contains(inviting)) {
+            response.setError("已經邀請過了");
+            return response;
         }
+        sender.invities.add(inviting);
+        userRepository.save(sender);
 
-        inviteRepository.save(inviting);
         response.data = inviting;
         return response;
     }
