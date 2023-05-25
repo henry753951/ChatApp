@@ -34,6 +34,7 @@ public class userDB {
     @JsonBackReference
     public Set<userDB> friends = Set.of();
     @DBRef(lazy = true)
+    @JsonBackReference
     public Set<inviteDB> invities = Set.of();
 
     public boolean online;

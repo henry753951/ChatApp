@@ -35,34 +35,41 @@ public class invite {
 
     @RequestMapping(value = "/invite", method = RequestMethod.DELETE)
     public BaseResponse<inviteDB> deleteInvite(Authentication authentication,
-            @RequestBody(required = true) String inviteId) {
+            @RequestBody(required = true) String userid) {
         // token 拿的 USER
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        if (userDetails.isActive()) {
+        userDB  user=userRepository.findById(userDetails.getId());
+        if(userDetails.isActive()){
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            inviteDB inviting = new inviteDB();
-            inviting.senderId = userDetails.getId();
-            inviteRepository.delete(inviting);
-            return response;
-        } else {
+            for(inviteDB inviting : user.invities){
+                if(inviting.senderId.equals(userid)){
+                    user.invities.remove(inviting);
+                    userRepository.save(user);
+                    inviteRepository.delete(inviting);
+                    return response;
+                }
+            }
+        }else{
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
             response.setError("帳號未啟用");
             return response;
         }
+        BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
+        response.setError("找不到使用者");
+        return response;
     }
-
-    @RequestMapping(value = "/invite", method = RequestMethod.POST)
+    
+ @RequestMapping(value = "/invite", method = RequestMethod.POST)
     public BaseResponse<inviteDB> acceptInvities(Authentication authentication,
             @RequestBody(required = true) String Userid) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            Set<inviteDB> invities = userRepository.findById(userDetails.getId()).invities;
+            userDB mine = userRepository.findById(userDetails.getId());
 
-            for (inviteDB inviting : invities) {
-                if (inviting.senderId.equals(Userid)) {
+            for(inviteDB inviting : mine.invities){
+                if(inviting.senderId.equals(Userid)){
                     userDB friend = userRepository.findById(Userid);
-                    userDB mine = userRepository.findById(userDetails.getId());
                     friend.friends.add(mine);
                     mine.friends.add(friend);
                     userRepository.save(friend);
