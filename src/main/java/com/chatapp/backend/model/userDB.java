@@ -27,6 +27,7 @@ public class userDB {
     public String id;
     @Indexed(unique = true)
     public String username;
+    public String avatar = "";
     public User user;
 
     //friend list
@@ -34,6 +35,7 @@ public class userDB {
     @JsonBackReference
     public Set<userDB> friends = Set.of();
     @DBRef(lazy = true)
+    @JsonBackReference
     public Set<inviteDB> invities = Set.of();
 
     public boolean online;
@@ -41,18 +43,21 @@ public class userDB {
     public long lastSeen; // unix timestamp
     public Set<role> roles = Set.of(new role(1L, "ROLE_USER"));
     
-    public boolean checkInvitedOrFriended(String senderId){
-        
+    public boolean checkInvited(String senderId){
         for(inviteDB invite:invities){
             if(invite.senderId.equals(senderId)){
                 return false;
             }
         }
-        for(userDB friend:friends){
-            if(friend.id.equals(senderId)){
-                return false;
-            }
-        }
+        
         return true;
     } 
+    public boolean checkFriend(String senderId){
+        for(userDB friend:friends){
+            if(friend.id.equals(senderId)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

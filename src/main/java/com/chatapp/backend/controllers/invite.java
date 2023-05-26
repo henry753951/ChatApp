@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
 
-
 @RestController
 @RequestMapping("/invite")
 @SecurityRequirement(name = "Bearer Authentication")
@@ -36,34 +35,41 @@ public class invite {
 
     @RequestMapping(value = "/invite", method = RequestMethod.DELETE)
     public BaseResponse<inviteDB> deleteInvite(Authentication authentication,
-            @RequestBody(required = true) String inviteId) {
+            @RequestBody(required = true) String userid) {
         // token 拿的 USER
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+        userDB  user=userRepository.findById(userDetails.getId());
         if(userDetails.isActive()){
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            inviteDB inviting = new inviteDB();
-            inviting.senderId = userDetails.getId();
-            inviteRepository.delete(inviting);
-            return response;
+            for(inviteDB inviting : user.invities){
+                if(inviting.senderId.equals(userid)){
+                    user.invities.remove(inviting);
+                    userRepository.save(user);
+                    inviteRepository.delete(inviting);
+                    return response;
+                }
+            }
         }else{
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
             response.setError("帳號未啟用");
             return response;
         }
+        BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
+        response.setError("找不到使用者");
+        return response;
     }
     
-    @RequestMapping(value = "/invite", method = RequestMethod.POST)
+ @RequestMapping(value = "/invite", method = RequestMethod.POST)
     public BaseResponse<inviteDB> acceptInvities(Authentication authentication,
             @RequestBody(required = true) String Userid) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-        if(userDetails.isActive()){
+        if (userDetails.isActive()) {
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>("成功!");
-            Set<inviteDB> invities = userRepository.findById(userDetails.getId()).invities;
+            userDB mine = userRepository.findById(userDetails.getId());
 
-            for(inviteDB inviting : invities){
+            for(inviteDB inviting : mine.invities){
                 if(inviting.senderId.equals(Userid)){
                     userDB friend = userRepository.findById(Userid);
-                    userDB mine = userRepository.findById(userDetails.getId());
                     friend.friends.add(mine);
                     mine.friends.add(friend);
                     userRepository.save(friend);
@@ -78,7 +84,7 @@ public class invite {
             }
             response.setError("找不到使用者");
             return response;
-        }else{
+        } else {
             BaseResponse<inviteDB> response = new BaseResponse<inviteDB>();
             response.setError("帳號未啟用");
             return response;
@@ -113,14 +119,27 @@ public class invite {
         Date date = new Date();
         long time = date.getTime();
         inviting.time = time;
-        
+
         userDB receiver = userRepository.findByUsername(username);
         if (receiver == null) {
             response.setError("找不到使用者");
+            response.msg = "失敗!";
             return response;
         }
-        if (!receiver.checkInvitedOrFriended(userDetails.getId())) {
+
+        if (userDetails.getId().equals(receiver.id)) {
+            response.setError("不能邀請自己");
+            response.msg = "失敗!";
+            return response;
+        }
+        if(receiver.checkFriend(username)){
+            response.setError("已經是好友了");
+            response.msg = "失敗!";
+            return response;
+        }
+        if (!receiver.checkInvited(userDetails.getId())) {
             response.setError("已經邀請過了");
+            response.msg = "失敗!";
             return response;
         }
 
