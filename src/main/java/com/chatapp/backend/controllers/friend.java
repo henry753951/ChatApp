@@ -54,9 +54,24 @@ public class friend {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if(userDetails.isActive()){
             BaseResponse<userDB> response = new BaseResponse<userDB>("成功!");
-            userDB inviting = new userDB();
-            inviting.id = userDetails.getId();
-            userRepository.delete(inviting);
+            Set<userDB> friend_set = userRepository.findById(userDetails.getId()).friends;
+            for (userDB userDB : friend_set) {
+                if(userDB.id.equals(friendId)){
+                    userDB friend = userRepository.findById(friendId);
+                    if(friend == null){
+                        response.setError("不存在");
+                        return response;
+                    }
+                    userDB mine = userRepository.findById(userDetails.getId());
+                    friend.friends.remove(mine);
+                    mine.friends.remove(friend);
+                    userRepository.save(friend);
+                    userRepository.save(mine);
+                    response.data = userDB;
+                    return response;
+                }
+            }
+            response.setError("找不到使用者");
             return response;
         }else{
             BaseResponse<userDB> response = new BaseResponse<userDB>();
