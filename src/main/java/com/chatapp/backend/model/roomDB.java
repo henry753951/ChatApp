@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,9 @@ public class roomDB {
     @Id
     public String id;
     @Indexed(unique = true)//設定索引值
-    public Set<String> memberIds = Set.of();
-    public List<msgDB> messages=new ArrayList<roomDB.msgDB>();
+    public String createrid;
+    public String roomname;
+    @DBRef
+    public List<userDB> members = new ArrayList<userDB>();
+    public List<msgDB> messages=new ArrayList<msgDB>();
 }

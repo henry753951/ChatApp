@@ -1,4 +1,5 @@
 package com.chatapp.backend.controllers;
+
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +21,34 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
+
 class roomAddBody {
     public Set<String> memberIds;
     public List<roomDB.msgDB> messages;
 }
+
+class roomCreateIn {
+    public String roomname;
+    public List<String> memberIds;
+}
+
+@RestController
+@RequestMapping(value = "/room")
+@SecurityRequirement(name = "Bearer Authentication")
 public class room {
     @Autowired
     private RoomRepository roomRepository;
     @Autowired
     private UserRepository userRepository;
-    @RequestMapping(value = "/room", method = RequestMethod.GET)
+
+    @RequestMapping(method = RequestMethod.GET)
     public BaseResponse<List<roomDB>> getRooms(Authentication authentication) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<List<roomDB>> response = new BaseResponse<List<roomDB>>("成功!");
-            List<roomDB> roomList = roomRepository.findByMemberIdsContaining(userDetails.getId());
-            response.data = roomList;
+            // List<roomDB> roomList =
+            // roomRepository.findByMemberIdsContaining(userDetails.getId());
+            // response.data = roomList;
             return response;
 
         } else {
@@ -44,13 +57,31 @@ public class room {
             return response;
         }
     }
-    @RequestMapping(value = "/room", method = RequestMethod.POST)
-    public BaseResponse<roomDB> createRoom(Authentication authentication) {
+
+    @RequestMapping(method = RequestMethod.POST)
+    public BaseResponse<roomDB> createRoom(Authentication authentication,
+            @RequestBody(required = true) roomCreateIn roomCreateIn) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
+
         if (userDetails.isActive()) {
             BaseResponse<roomDB> response = new BaseResponse<roomDB>("成功!");
+
             roomDB room = new roomDB();
-            room.memberIds.add(userDetails.getId());
+            room.createrid = userDetails.getId();
+            room.members.add(userRepository.findById(userDetails.getId()));
+            
+            if (roomCreateIn.roomname == null) {
+                room.roomname = "群組聊天";
+            } else {
+                room.roomname = roomCreateIn.roomname;
+            }
+            for (String member : roomCreateIn.memberIds) {
+                userDB user = userRepository.findById(member);
+                if (user != null) {
+                    room.members.add(user);
+                }
+            }
+
             roomRepository.save(room);
             response.data = room;
             return response;
@@ -60,7 +91,8 @@ public class room {
             return response;
         }
     }
-    @RequestMapping(value = "/room/{id}", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public BaseResponse<roomDB> getRoomMessages(Authentication authentication,
             @PathVariable(value = "id") String id) {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
@@ -76,4 +108,3 @@ public class room {
         }
     }
 }
-
