@@ -6,5 +6,6 @@ import com.chatapp.backend.model.roomDB;
 
 public interface RoomRepository  extends MongoRepository<roomDB, Object> {
     roomDB findById(String id);
+    List<roomDB> findByMembersId(String id);
     // List<roomDB> findByMembersContainingByUserId(String id);
 }

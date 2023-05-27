@@ -13,7 +13,7 @@ import com.chatapp.backend.model.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest; 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
@@ -46,9 +46,9 @@ public class room {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<List<roomDB>> response = new BaseResponse<List<roomDB>>("成功!");
-            // List<roomDB> roomList =
-            // roomRepository.findByMemberIdsContaining(userDetails.getId());
-            // response.data = roomList;
+            List<roomDB> roomList =
+            roomRepository.findByMembersId(userDetails.getId());
+            response.data = roomList;
             return response;
 
         } else {

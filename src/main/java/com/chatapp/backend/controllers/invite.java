@@ -27,12 +27,14 @@ import com.chatapp.backend.entity.*;
 @RestController
 @RequestMapping("/invite")
 @SecurityRequirement(name = "Bearer Authentication")
+
 public class invite {
     @Autowired
     private inviteRepository inviteRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private RoomRepository roomRepository;
     @RequestMapping(value = "/invite", method = RequestMethod.DELETE)
     public BaseResponse<inviteDB> deleteInvite(Authentication authentication,
             @RequestBody(required = true) String userid) {
@@ -79,6 +81,14 @@ public class invite {
                     inviteRepository.delete(inviting);
 
                     response.data = inviting;
+                    roomDB room = new roomDB();
+                    room.createrid = mine.id;
+                    room.members.add(mine);
+                    room.members.add(friend);
+                    room.roomname = mine.username + "和" + friend.username + "的聊天室";
+                    roomRepository.save(room);
+
+
                     return response;
                 }
             }
