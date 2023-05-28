@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,11 +20,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
 public class SecurityConfig {
-
     private JwtAuthenticationEntryPoint authenticationEntryPoint;
-
     private JwtAuthenticationFilter authenticationFilter;
 
     public SecurityConfig(UserDetailsService userDetailsService,
@@ -45,20 +44,21 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         List<String> whiteList = Arrays.asList("/docs", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",
-                "/auth/login");
+                "/auth/login", "/ws-message/**", "/ws-message","/topic/**","/topic","/app/**","/app");
 
         http.csrf().disable();
         http.authorizeHttpRequests(
-                (authorize) -> authorize.requestMatchers(whiteList.toArray(new String[0])).permitAll()
-                        .anyRequest().authenticated())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(authenticationEntryPoint))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        (authorize) -> authorize.requestMatchers(whiteList.toArray(new
+        String[0])).permitAll()
+        .anyRequest().authenticated())
+        .exceptionHandling(exception -> exception
+        .authenticationEntryPoint(authenticationEntryPoint))
+        .sessionManagement(session -> session
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationFilter,
+        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
