@@ -46,6 +46,8 @@ public class user {
 
             String path = userDetails.getId() + ".jpg";
             File dest = new File(path);
+            // print path
+            System.out.println(dest.getAbsolutePath());
             try {
                 file.transferTo(dest);
             } catch (Exception e) {
