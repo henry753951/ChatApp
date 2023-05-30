@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class SocketController {
     @Autowired
     SimpMessagingTemplate template;
-
+    
     @MessageMapping("/chat")
     public void greeting(Message<?> message,String jsonString) throws Exception {
         MessageHeaders headers = message.getHeaders();
