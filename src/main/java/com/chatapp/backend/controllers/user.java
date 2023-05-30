@@ -35,7 +35,7 @@ public class user {
         UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         if (userDetails.isActive()) {
             BaseResponse<String> response = new BaseResponse<String>("成功!");
-            String path = "路徑" + userDetails.getId() + ".jpg";
+            String path = "avatar//" + userDetails.getId() + ".jpg";
             File dest = new File(path);
             try {
                 file.transferTo(dest);
@@ -49,15 +49,5 @@ public class user {
             response.setError("帳號未啟用");
             return response;
         }
-    }
-    @RequestMapping(value = "/user/avatar/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public BaseResponse<String> getAvatar(Authentication authentication, @PathVariable String id) {
-        BaseResponse<String> response = new BaseResponse<String>("成功!");
-        String path = "路径" + id + ".jpg";
-
-
-
-        return response;
     }
 }
