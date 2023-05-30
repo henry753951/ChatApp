@@ -22,10 +22,7 @@ import java.text.SimpleDateFormat;
 
 import com.chatapp.backend.entity.*;
 
-class roomAddBody {
-    public Set<String> memberIds;
-    public List<roomDB.msgDB> messages;
-}
+
 
 class roomCreateIn {
     public String roomname;
