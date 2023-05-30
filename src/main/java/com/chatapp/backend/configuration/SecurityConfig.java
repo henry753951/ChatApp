@@ -45,7 +45,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         List<String> whiteList = Arrays.asList("/docs", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**",
-                "/auth/login", "/ws-message/**", "/ws-message","/topic/**","/topic","/app/**","/app");
+                "/auth/login", "/ws-message/**", "/ws-message","/topic/**","/topic","/app/**","/app","/user/avatar/**");
 
         http.csrf().disable();
         http.authorizeHttpRequests(
